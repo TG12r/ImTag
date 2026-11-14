@@ -1,0 +1,28 @@
+# Directorios de compilación CMake
+build/
+**/build/
+out/
+.vs/
+.cache/
+CMakeUserPresets.json
+
+# Archivos binarios y temporales de compilación
+*.exe
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.pdb
+*.obj
+*.o
+*.ilk
+*.exp
+*.tlog
+*.lastbuildstate
+
+# Estado de ejecución de ImGui
+imgui.ini
+**/imgui.ini
+
+plans/

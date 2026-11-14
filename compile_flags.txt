@@ -1,0 +1,8 @@
+-xc++
+-std=c++20
+-Iinclude
+-Isrc
+-Itests/guia/include
+-Itests/guia/build/_deps/glfw-src/include
+-Itests/guia/build/_deps/imgui-src
+-Itests/guia/build/_deps/imgui-src/backends

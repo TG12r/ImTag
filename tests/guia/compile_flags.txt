@@ -1,0 +1,6 @@
+-xc++
+-std=c++20
+-Iinclude
+-Ibuild/_deps/glfw-src/include
+-Ibuild/_deps/imgui-src
+-Ibuild/_deps/imgui-src/backends

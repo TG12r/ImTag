@@ -1,0 +1,151 @@
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+void holiii(){
+  std::cout << "holaaa" << std::endl;
+}
+
+int main() {
+  // Inicialización de GLFW
+  if (!glfwInit()) {
+    std::cout << "Failed to initialize GLFW" << std::endl;
+    return -1;
+  }
+
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+  GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+  const GLFWvidmode *mode = monitor ? glfwGetVideoMode(monitor) : nullptr;
+
+  const int width = mode ? (mode->width / 2) : 1280;
+  const int height = mode ? (mode->height / 2) : 720;
+
+  //  Crear la ventana principal
+  GLFWwindow *window =
+      glfwCreateWindow(width, height, "Test ImTag", nullptr, nullptr);
+  if (window == nullptr) {
+    // Fallback en caso de que OpenGL 4.6 no esté soportado por el driver
+    glfwDefaultWindowHints();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    window = glfwCreateWindow(width, height, "Test ImTag", nullptr, nullptr);
+  }
+  if (window == nullptr) {
+    std::cout << "Failed to create GLFW window" << std::endl;
+    glfwTerminate();
+    return -1;
+  }
+
+  if (mode) {
+    glfwSetWindowPos(window, (mode->width - width) / 2,
+                     (mode->height - height) / 2);
+  }
+  glfwMakeContextCurrent(window);
+  glfwSwapInterval(1); // Enable V-Sync
+
+  // 3. Inicializar GLAD (obligatorio antes de ImGui y funciones OpenGL)
+  int version = gladLoadGL((GLADloadfunc)glfwGetProcAddress);
+  if (version == 0) {
+    std::cout << "Failed to initialize GLAD" << std::endl;
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return -1;
+  }
+
+  // Setup Dear ImGui context
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO &io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+  io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+  ImGui::StyleColorsDark();
+
+  // Setup Platform/Renderer backends
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplOpenGL3_Init("#version 460");
+
+  // Main loop
+  while (!glfwWindowShouldClose(window)) {
+    glfwPollEvents();
+
+    // Iniciar frame de ImGui
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // Código ImTag
+
+    // if(ImGui::Begin("")){
+
+    //   ImGui::End();
+    // }
+    static bool varBoolCheck = false;
+    static float volumen = 0.5f;
+    static int nivel = 1;
+    static char nombreUsuario[128] = "";
+
+
+    <window name="Hola" fullscreen="true">
+      <text value="Hola mundo" />
+      <button name="Click para saludar" onClick="holiii();" />
+
+      <separator />
+      <spacing />
+
+      <checkbox name="ejemplo checkbox" bind="varBoolCheck" onChange="holiii()"/>
+
+      <spacing />
+
+      <slider label="Volumen (float)" bind="volumen" min="0.0f" max="1.0f" />
+      <slider label="Nivel (int)" bind="nivel" min="1" max="10" type="int" />
+      <spacing />
+      <input label="Tu Nombre" bind="nombreUsuario" />
+
+    </window>
+    
+    // Fin Código ImTag
+
+    // ImGui::ShowDemoWindow();
+
+    // Renderizado
+    ImGui::Render();
+    int display_w, display_h;
+    glfwGetFramebufferSize(window, &display_w, &display_h);
+    glViewport(0, 0, display_w, display_h);
+    glClearColor(0.12f, 0.12f, 0.14f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    // Soporte de múltiples ventanas / viewports independientes de ImGui Docking
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+      GLFWwindow *backup_current_context = glfwGetCurrentContext();
+      ImGui::UpdatePlatformWindows();
+      ImGui::RenderPlatformWindowsDefault();
+      glfwMakeContextCurrent(backup_current_context);
+    }
+
+    glfwSwapBuffers(window);
+  }
+
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+
+  glfwDestroyWindow(window);
+  glfwTerminate();
+  return 0;
+}
